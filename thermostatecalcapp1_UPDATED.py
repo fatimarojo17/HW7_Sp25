@@ -28,9 +28,7 @@ Includes basic error handling and debug output to manage invalid combinations.
         self.x = None
 
     def computeProperties(self):
-         """
-        Assumes p and t are already calculated
-        :return:"""
+        """Compute final properties from (p,t,region,x, etc.) after setState."""
         if self.region == "two-phase":
             uf = self.steamTable.uL_p(self.p)
             ug = self.steamTable.uV_p(self.p)
@@ -59,7 +57,9 @@ Includes basic error handling and debug output to manage invalid combinations.
 
     def setState(self, prop1, prop2, val1, val2, SI=True):
         """
-       Calculates the thermodynamic state variables based on specified values.
+        Sets the thermodynamic state, given two property names (e.g., 'p','t')
+        and their numeric values in either SI or English units.
+        We do minimal checks for valid ranges to avoid XSteam crashes.
         """
         # Switch XSteam to correct units
         self.steamTable = XSteam(XSteam.UNIT_SYSTEM_MKS if SI else XSteam.UNIT_SYSTEM_FLS)
@@ -81,7 +81,7 @@ Includes basic error handling and debug output to manage invalid combinations.
         prop1 = prop1.lower().strip()
         prop2 = prop2.lower().strip()
 
-        
+        # ------------------- EXAMPLE: p–t or t–p -------------------
         if ('p' in [prop1, prop2]) and ('t' in [prop1, prop2]):
             if prop1 == 'p':
                 self.p = val1
